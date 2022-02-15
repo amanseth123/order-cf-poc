@@ -32,6 +32,7 @@ public class OrderCloudFunction implements BackgroundFunction<GcsEvent> {
     private String getEnvironmentProperties() {
         return "mtech-wms-oms-poc";
     }
+    
     private String getType(GcsEvent event){
         String name = event.getName();
         String type = "";
@@ -59,7 +60,7 @@ public class OrderCloudFunction implements BackgroundFunction<GcsEvent> {
             }
 
         } catch (Exception e) {
-            throw new RuntimeException("Exception while executing OrderFileWatchFunction", e);
+            throw new RuntimeException("Exception while executing OrderCloudFunction", e);
         }
     }
     boolean validateGcsEvent(String name,String type){
@@ -92,9 +93,10 @@ public class OrderCloudFunction implements BackgroundFunction<GcsEvent> {
 
         ReadableByteChannel channel = storage.reader(blobId);
         InputStream inputStream = Channels.newInputStream(channel);
+
         BufferedReader streamReader = new BufferedReader(new InputStreamReader(inputStream, UTF_8));
 
-        String topicId = "";
+        String topicId = "order-poc-test-pub";
         try {
             log.info("Reading file from:" + blobId.toString());
             for (String line = streamReader.readLine(); StringUtils.isNotEmpty(line); line = streamReader.readLine()) {
